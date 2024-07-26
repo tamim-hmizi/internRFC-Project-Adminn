@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Stack, Button, Box, Image, Flex, SimpleGrid } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { Stack, Button, Box, Image, Flex, SimpleGrid, IconButton } from "@chakra-ui/react";
+import { ChevronDownIcon, AddIcon, CloseIcon } from "@chakra-ui/icons";
 import BeatLoader from 'react-spinners/BeatLoader';
 import Link from 'next/link';
+
+
 
 function ProjectCard({ project }) {
   const property = {
@@ -15,6 +17,15 @@ function ProjectCard({ project }) {
 
   return (
     <Box maxW='xs' borderWidth='1px' borderRadius='lg' overflow='hidden' mb={4}>
+       <IconButton
+        icon={<CloseIcon />}
+        aria-label="Close"
+        size="sm"
+        colorScheme="red"
+        top={2}
+        left={2}
+        variant="outline"
+      />
       <Image 
         src={property.imageUrl} 
         alt={property.imageAlt} 
@@ -24,6 +35,7 @@ function ProjectCard({ project }) {
         margin="0 auto"
         mb={2}
       />
+      
       <Box p='4'>
         <Box
           mt='0'
@@ -36,13 +48,18 @@ function ProjectCard({ project }) {
           {project.Sujet}
         </Box>
         <Box>
-          <Flex justify="flex-end" mt={2}>
-          <Link href={`/projetDetails/${encodedId}`} passHref>
-            <Button colorScheme='red' size='sm'>Voir les détails</Button>
-            </Link>
-          </Flex>
-        </Box>
+  <Flex direction="row" justify="space-between" mt={2}>
+    <Link href={''} passHref>
+      <Button colorScheme='green' size='sm'>Voir les applications</Button>
+    </Link>
+    <Link href={`/projetDetails/${encodedId}`} passHref>
+      <Button colorScheme='red' size='sm'>Voir les détails</Button>
+    </Link>
+  </Flex>
+</Box>
+
       </Box>
+      
     </Box>
   );
 }
@@ -51,6 +68,9 @@ function Home() {
   const [projects, setProjects] = useState([]);
   const [selectedDomaine, setSelectedDomaine] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [domainPrefix, setDomainPrefix] = useState('');
+  const [domainName, setDomainName] = useState('');
 
   useEffect(() => {
     if (selectedDomaine) {
@@ -95,6 +115,22 @@ function Home() {
                 <p>Aucun projet disponible pour ce domaine.</p>
               )
             )}
+             <Link href={`/NewProjet/page?Domaine=${encodeURIComponent(selectedDomaine)}`} passHref>
+              <Button
+                borderColor='teal'
+                borderWidth='2px'
+                borderStyle='dashed'
+                color='teal'
+                variant='outline'
+                fontWeight='bold'
+                size='md'
+                leftIcon={<AddIcon />}
+                _hover={{ bg: 'blue.50' }}
+                _active={{ bg: 'blue.100' }}
+              >
+                Ajouter
+              </Button>
+            </Link>
           </Box>
         )}
 
@@ -118,6 +154,22 @@ function Home() {
                 <p>Aucun projet disponible pour ce domaine.</p>
               )
             )}
+             <Link href={`/NewProjet/page?Domaine=${encodeURIComponent(selectedDomaine)}`} passHref>
+              <Button
+                borderColor='teal'
+                borderWidth='2px'
+                borderStyle='dashed'
+                color='teal'
+                variant='outline'
+                fontWeight='bold'
+                size='md'
+                leftIcon={<AddIcon />}
+                _hover={{ bg: 'blue.50' }}
+                _active={{ bg: 'blue.100' }}
+              >
+                Ajouter
+              </Button>
+            </Link>
           </Box>
         )}
 
@@ -141,6 +193,22 @@ function Home() {
                 <p>Aucun projet disponible pour ce domaine.</p>
               )
             )}
+            <Link href={`/NewProjet/page?Domaine=${encodeURIComponent(selectedDomaine)}`} passHref>
+              <Button
+                borderColor='teal'
+                borderWidth='2px'
+                borderStyle='dashed'
+                color='teal'
+                variant='outline'
+                fontWeight='bold'
+                size='md'
+                leftIcon={<AddIcon />}
+                _hover={{ bg: 'blue.50' }}
+                _active={{ bg: 'blue.100' }}
+              >
+                Ajouter
+              </Button>
+            </Link>
           </Box>
         )}
 
@@ -164,7 +232,24 @@ function Home() {
                 <p>Aucun projet disponible pour ce domaine.</p>
               )
             )}
+             <Link href={`/NewProjet/page?Domaine=${encodeURIComponent(selectedDomaine)}`} passHref>
+              <Button
+                borderColor='teal'
+                borderWidth='2px'
+                borderStyle='dashed'
+                color='teal'
+                variant='outline'
+                fontWeight='bold'
+                size='md'
+                leftIcon={<AddIcon />}
+                _hover={{ bg: 'blue.50' }}
+                _active={{ bg: 'blue.100' }}
+              >
+                Ajouter
+              </Button>
+            </Link>
           </Box>
+          
         )}
       </Stack>
     </Flex>
