@@ -1,4 +1,4 @@
-// pages/api/addProject.js
+
 import { DynamoDB } from 'aws-sdk';
 
 const dynamoDb = new DynamoDB.DocumentClient();
@@ -6,13 +6,12 @@ const dynamoDb = new DynamoDB.DocumentClient();
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { Ref, Domaine, Sujet, Description, Prerequis, Objectifs } = req.body;
-
-    console.log('Données reçues:', req.body);
-
-    // Vérifiez que toutes les valeurs nécessaires sont présentes et non vides
     if (!Ref || !Domaine || !Sujet || !Description || !Prerequis || !Objectifs) {
       return res.status(400).json({ message: 'Tous les champs sont requis et doivent être remplis.' });
     }
+    // Filtrer les valeurs vides des tableaux Prerequis et Objectifs
+    const filteredPrerequis = Prerequis.filter(prerequi => prerequi.trim() !== '');
+    const filteredObjectifs = Objectifs.filter(objectif => objectif.trim() !== '');
 
     const params = {
       TableName: 'PFEProjects',
@@ -21,8 +20,8 @@ export default async function handler(req, res) {
         Domaine,
         Sujet,
         Description,
-        Prerequis: new Set(Prerequis),
-        Objectifs: new Set(Objectifs) 
+        Prerequis: filteredPrerequis,
+        Objectifs: filteredObjectifs 
       }
     };
 

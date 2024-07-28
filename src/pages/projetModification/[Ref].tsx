@@ -1,6 +1,7 @@
+// src/pages/projetModification/[Ref].tsx
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
-import { Box, Button, FormControl, FormLabel, Input, Textarea, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormLabel, Input, Textarea, IconButton, VStack } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
 
@@ -11,36 +12,43 @@ const prefixMap = {
   'Identity & Modern Workplace': 'IN',
 };
 
-function NewProjet() {
+function ProjetModification() {
   const router = useRouter();
-  const { Domaine } = router.query;
+  const { Ref } = router.query;
 
-  const [Ref, setRef] = useState('#');
+  const [project, setProject] = useState(null);
   const [Sujet, setSujet] = useState('');
   const [Description, setDescription] = useState('');
-  const [Objectifs, setObjectifs] = useState(['']);
-  const [Prerequis, setPrerequis] = useState(['']);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [Objectifs, setObjectifs] = useState([]);
+  const [Prerequis, setPrerequis] = useState([]);
 
   useEffect(() => {
-    if (Domaine) {
-      const prefix = prefixMap[Domaine];
-      setRef(`#${prefix}`);
-    }
-  }, [Domaine]);
+    if (Ref) {
+      const fetchProject = async () => {
+        try {
+          const response = await fetch(`/api/projetModif/${Ref}`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setProject(data);
+          setSujet(data.Sujet);
+          setDescription(data.Description);
+          setObjectifs(data.Objectifs);
+          setPrerequis(Array.isArray(data.Prerequis) ? data.Prerequis : Array.from(data.Prerequis));
+        } catch (error) {
+          console.error('Error fetching project:', error);
+        }
+      };
 
-  const handleAddPrerequis = () => {
-    setPrerequis([...Prerequis, '']);
-  };
+      fetchProject();
+    }
+  }, [Ref]);
 
   const handlePrerequisChange = (index, value) => {
     const newPrerequis = [...Prerequis];
     newPrerequis[index] = value;
     setPrerequis(newPrerequis);
-  };
-
-  const handleAddObjectifs = () => {
-    setObjectifs([...Objectifs, '']);
   };
 
   const handleObjectifsChange = (index, value) => {
@@ -49,25 +57,33 @@ function NewProjet() {
     setObjectifs(newObjectifs);
   };
 
+  const handleAddPrerequis = () => {
+    setPrerequis([...Prerequis, '']);
+  };
+
+  const handleAddObjectifs = () => {
+    setObjectifs([...Objectifs, '']);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await fetch('/api/newProject', {
-        method: 'POST',
+      const response = await fetch(`/api/projetModif/${Ref}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ Ref, Domaine, Sujet, Description, Prerequis, Objectifs }),
+        body: JSON.stringify({ Sujet, Description, Prerequis, Objectifs }),
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de l\'ajout du projet');
+        throw new Error('Erreur lors de la mise à jour du projet');
       }
 
       const result = await response.json();
-      console.log(result.message); 
-      setIsModalOpen(true);
+      console.log(result.message);
+      router.push('/');
     } catch (error) {
       console.error('Erreur:', error);
     }
@@ -78,22 +94,12 @@ function NewProjet() {
       <form onSubmit={handleSubmit}>
         <FormControl id='Ref' isRequired>
           <FormLabel>Référence</FormLabel>
-          <Box display="flex">
-            <Input type='text' value={Ref} readOnly w="auto" />
-            <Input 
-              type='text' 
-              placeholder='0000'
-              maxLength={4}
-              w="full"
-              value={Ref.slice(3)}
-              onChange={(e) => setRef(`#${prefixMap[Domaine] || ''}${e.target.value}`)}
-            />
-          </Box>
+          <Input type='text' value={Ref} readOnly />
         </FormControl>
 
         <FormControl id='Domaine' isRequired mt={4}>
           <FormLabel>Domaine</FormLabel>
-          <Input type='text' value={Domaine || ''} readOnly />
+          <Input type='text' value={project?.Domaine || ''} readOnly />
         </FormControl>
 
         <FormControl id='Sujet' isRequired mt={4}>
@@ -151,30 +157,13 @@ function NewProjet() {
             </Box>
           ))}
         </FormControl>
-
+        
         <Button mt={4} colorScheme='teal' type='submit'>
           Soumettre
         </Button>
       </form>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Ajout avec succès</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <p>Le projet a été ajouté avec succès !</p>
-          </ModalBody>
-          <ModalFooter>
-            <Link href="/">
-              <Button colorScheme="teal" mr={3}>
-                OK
-              </Button>
-            </Link>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
     </Box>
   );
 }
 
-export default NewProjet;
+export default ProjetModification;
