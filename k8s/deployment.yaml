@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-admin-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: InternRFC-app-project-admin
+  template:
+    metadata:
+      labels:
+        app: InternRFC-app-project-admin
+    spec:
+      containers:
+      - name: Project-Admin-container
+        image: 533267283761.dkr.ecr.eu-central-1.amazonaws.com/projet-admin:latest
+        ports:
+        - containerPort: 3000
