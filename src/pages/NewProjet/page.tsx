@@ -4,7 +4,9 @@ import { Box, Button, FormControl, FormLabel, Input, Textarea, IconButton, Modal
 import { AddIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
 
-const prefixMap = {
+type DomaineType = 'Data center & Cloud formation' | 'Network & Security' | 'Business Application' | 'Identity & Modern Workplace';
+
+const prefixMap: Record<DomaineType, string> = {
   'Data center & Cloud formation': 'DS',
   'Network & Security': 'NS',
   'Business Application': 'BA',
@@ -23,17 +25,20 @@ function NewProjet() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    if (Domaine) {
-      const prefix = prefixMap[Domaine];
-      setRef(`#${prefix}`);
+    if (typeof Domaine === 'string') {
+      const prefix = prefixMap[Domaine as DomaineType];
+      if (prefix) {
+        setRef(`#${prefix}`);
+      } 
     }
   }, [Domaine]);
+  
 
   const handleAddPrerequis = () => {
     setPrerequis([...Prerequis, '']);
   };
 
-  const handlePrerequisChange = (index, value) => {
+  const handlePrerequisChange = (index: number, value: string) => {
     const newPrerequis = [...Prerequis];
     newPrerequis[index] = value;
     setPrerequis(newPrerequis);
@@ -43,13 +48,13 @@ function NewProjet() {
     setObjectifs([...Objectifs, '']);
   };
 
-  const handleObjectifsChange = (index, value) => {
+  const handleObjectifsChange = (index: number, value: string) => {
     const newObjectifs = [...Objectifs];
     newObjectifs[index] = value;
     setObjectifs(newObjectifs);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
@@ -85,12 +90,13 @@ function NewProjet() {
               placeholder='0000'
               maxLength={4}
               w="full"
-              value={Ref.slice(3)}
-              onChange={(e) => setRef(`#${prefixMap[Domaine] || ''}${e.target.value}`)}
+              //value={Ref.slice(3)}
+              onChange={(e) => setRef(`${prefixMap[Domaine as DomaineType] || ''}${e.target.value}`)}
+
             />
           </Box>
         </FormControl>
-
+        
         <FormControl id='Domaine' isRequired mt={4}>
           <FormLabel>Domaine</FormLabel>
           <Input type='text' value={Domaine || ''} readOnly />

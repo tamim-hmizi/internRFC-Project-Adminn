@@ -5,7 +5,21 @@ import { ChevronDownIcon, AddIcon, CloseIcon } from "@chakra-ui/icons";
 import BeatLoader from 'react-spinners/BeatLoader';
 import Link from 'next/link';
 
-function ProjectCard({ project, onDelete }) {
+export interface Projet{
+  Ref: string, 
+  Sujet: string, 
+  Description: string,
+  Domaine: string,
+  Objectifs: string[],
+  Prerequis: string[]
+}
+
+
+interface ProjectCardProps {
+  project: Projet;
+  onDelete: (projectRef: string) => void;
+}
+function ProjectCard ({ project, onDelete }: { project: Projet; onDelete: (projectRef: string) => void }){
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -110,7 +124,7 @@ function ProjectCard({ project, onDelete }) {
 }
 
 function Home() {
-  const [projects, setProjects] = useState([]);
+  const [projects, setProjects] = useState<Projet[]>([]);
   const [selectedDomaine, setSelectedDomaine] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -130,11 +144,11 @@ function Home() {
     }
   }, [selectedDomaine]);
 
-  const handleButtonClick = (domaine) => {
+  const handleButtonClick = (domaine:string) => {            
     setSelectedDomaine(domaine);
   };
 
-  const handleDelete = (projectRef) => {
+  const handleDelete = (projectRef:string) => {
     setProjects(prevProjects => prevProjects.filter(project => project.Ref !== projectRef));
   };
 
@@ -152,7 +166,7 @@ function Home() {
               </Flex>
             ) : (
               projects.length > 0 ? (
-                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4} justify="center">
+                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
                   {projects.map((project, index) => (
                     <ProjectCard key={index} project={project} onDelete={handleDelete} />
                   ))}
@@ -191,7 +205,7 @@ function Home() {
               </Flex>
             ) : (
               projects.length > 0 ? (
-                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4} justify="center">
+                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4} >
                   {projects.map((project, index) => (
                     <ProjectCard key={index} project={project} onDelete={handleDelete} />
                   ))}
@@ -230,7 +244,7 @@ function Home() {
               </Flex>
             ) : (
               projects.length > 0 ? (
-                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4} justify="center">
+                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
                   {projects.map((project, index) => (
                     <ProjectCard key={index} project={project} onDelete={handleDelete} />
                   ))}
@@ -269,7 +283,7 @@ function Home() {
               </Flex>
             ) : (
               projects.length > 0 ? (
-                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4} justify="center">
+                <SimpleGrid columns={[1, 2, 3, 4]} spacing={4}>
                   {projects.map((project, index) => (
                     <ProjectCard key={index} project={project} onDelete={handleDelete} />
                   ))}

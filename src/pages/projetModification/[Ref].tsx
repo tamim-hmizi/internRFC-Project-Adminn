@@ -4,7 +4,14 @@ import { useState, useEffect } from 'react';
 import { Box, Button, FormControl, FormLabel, Input, Textarea, IconButton, VStack } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import Link from 'next/link';
-
+export interface Projet{
+  Sujet: string; 
+  Ref: string; 
+  Domaine: string; 
+  Description: string;
+  Objectifs: string[];
+  Prerequis: string[];
+}
 const prefixMap = {
   'Data center & Cloud formation': 'DS',
   'Network & Security': 'NS',
@@ -16,11 +23,11 @@ function ProjetModification() {
   const router = useRouter();
   const { Ref } = router.query;
 
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState<Projet | undefined>(undefined);
   const [Sujet, setSujet] = useState('');
   const [Description, setDescription] = useState('');
-  const [Objectifs, setObjectifs] = useState([]);
-  const [Prerequis, setPrerequis] = useState([]);
+  const [Objectifs, setObjectifs] = useState<string[]>([]);
+ const [Prerequis, setPrerequis] = useState<string[]>([]);
 
   useEffect(() => {
     if (Ref) {
@@ -45,13 +52,13 @@ function ProjetModification() {
     }
   }, [Ref]);
 
-  const handlePrerequisChange = (index, value) => {
+  const handlePrerequisChange = (index:number, value:string) => {
     const newPrerequis = [...Prerequis];
     newPrerequis[index] = value;
     setPrerequis(newPrerequis);
   };
 
-  const handleObjectifsChange = (index, value) => {
+  const handleObjectifsChange = (index:number, value:string) => {
     const newObjectifs = [...Objectifs];
     newObjectifs[index] = value;
     setObjectifs(newObjectifs);
@@ -65,7 +72,7 @@ function ProjetModification() {
     setObjectifs([...Objectifs, '']);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {

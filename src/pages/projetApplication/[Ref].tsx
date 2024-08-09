@@ -3,10 +3,15 @@ import { useState, useEffect } from 'react';
 import { Box, Heading, Table, Thead, Tbody, Tr, Th, Td, Link, Input } from '@chakra-ui/react';
 import NextLink from 'next/link';
 
+export interface Application{
+  id: string, 
+  name: string,
+  RefP: string
+}
 const ProjectApplications = () => {
   const router = useRouter();
   const { Ref } = router.query;
-  const [applications, setApplications] = useState([]);
+  const [applications, setApplications] = useState<Application[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {

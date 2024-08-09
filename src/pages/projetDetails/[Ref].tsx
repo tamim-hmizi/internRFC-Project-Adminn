@@ -4,13 +4,22 @@ import { Box, Heading, Text, Button, IconButton, List, ListItem, Flex } from '@c
 import { AiFillEdit } from 'react-icons/ai';
 import Link from 'next/link';
 
+export interface Projet {
+  Sujet: string; 
+  Ref: string; 
+  Domaine: string; 
+  Description: string;
+  Objectifs: string[];
+  Prerequis: string[];
+}
+
 const ProjectDetails = () => {
   const router = useRouter();
   const { Ref } = router.query;
-  const [project, setProject] = useState(null);
+  const [project, setProject] = useState<Projet | undefined>(undefined);
 
   useEffect(() => {
-    if (Ref) {
+    if (Ref && typeof Ref === 'string') {
       const apiUrl = `/api/projet/${Ref}`;
       console.log('API URL:', apiUrl);
 
@@ -22,7 +31,7 @@ const ProjectDetails = () => {
           }
           return response.json();
         })
-        .then(data => {
+        .then((data: Projet) => {
           console.log('Fetched project data:', data);
           setProject(data);
         })
@@ -40,7 +49,8 @@ const ProjectDetails = () => {
           top="10px"
           right="10px"
           size="sm"
-          onClick={() => router.push(`/projetModification/${Ref}`)}
+          aria-label=''
+          onClick={() => router.push(`/projetModification/${project?.Ref}`)}
         />
         <Heading mb={4}>Détails du projet</Heading>
         {project ? (
